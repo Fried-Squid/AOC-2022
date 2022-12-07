@@ -1,7 +1,24 @@
 import importlib
+from get import write_data
 
-n = "7"
-i = importlib.import_module(f'day_{n}')
+
+n = input(" Which day do you want to do? ")
+
+try:
+    n=str(int(n))
+except TypeError:
+    import datetime
+    n = str(datetime.datetime.now().strftime("%d")).replace("0", "")
+
+try:
+    i = importlib.import_module(f'day_{n}')
+except ModuleNotFoundError:
+    x = write_data()
+    if x:
+        print(f'No day {n} found, successfully created day{n}.py and got the data as data/day{n}.txt')
+    else:
+        print(f'No day {n} found. Get script was unsucessful in creating the required files.')
+
 with open(f'data/day{n}.txt', "r") as f:
     data = f.read().split("\n")
     print(i.solve_p1(data))
