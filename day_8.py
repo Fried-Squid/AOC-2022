@@ -35,8 +35,24 @@ def solve_p1(data):
         print(s)
 
     counts = [sum([a[1] for a in x]) for x in data]
-    print(counts)
     return sum(counts)
     
 def solve_p2(data):
-    pass
+    data   = [[(int(y),None) for y in x] for x in data]
+    scores = []
+    for i, _ in enumerate(data): #issues iwth X5535
+        for j, _ in enumerate(data):
+            viewdirs = get_fullrows(data,i,j)
+            score=1
+            for _ in range(viewdirs.count(-1)):
+                viewdirs.remove(-1)
+                score=0
+            for dire in viewdirs:
+                trees=0
+                for i in range(len(dire)):
+                    if dire[0:i] == sorted(dire[0:i]):
+                        trees+=1
+                score*=trees
+            scores.append(score)
+    print(scores)
+    return max(scores)
