@@ -17,6 +17,9 @@ def solve_p2(data):
     return sum(data)
 
 
+
+#The pipe based solutions are often way cleaner and easier to read esp when its multidimensional maps. Remember you
+#can use acelib.ragged_map if needed.
 from pipe import select
 def solve_p2_cleaner(data):
     return sum(list(data | select(lambda a: a.split(","))

@@ -1,5 +1,7 @@
 from pipe import select, where
-from os import system
+# note to self for future challenges:
+#   im trying to use less map() and filter() and use pipe instead
+#   more readable and debuggable, see day_4 lol
 
 def measure_signal_strength(PC, X):
     if (PC+20) % 40 == 0:
