@@ -21,7 +21,7 @@ except ModuleNotFoundError:
         print(f'No day {n} found. Get script was unsucessful in creating the required files.')
 
     
-with open(f'data/day{n}.txt', "r", encoding="utf-8") as f:
+with open(f'data/day{n}.txt', "r+", encoding="utf-8") as f:
     data = f.read().split("\n")
     print(i.solve_p1(data))
     print(i.solve_p2(data))
