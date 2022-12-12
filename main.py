@@ -20,7 +20,7 @@ except ModuleNotFoundError:
     else:
         print(f'No day {n} found. Get script was unsucessful in creating the required files.')
 
-    
+i = importlib.import_module(f'day_{n}')
 with open(f'data/day{n}.txt', "r+", encoding="utf-8") as f:
     data = f.read().split("\n")
     print(i.solve_p1(data))
