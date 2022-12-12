@@ -44,6 +44,7 @@ def solve_p1(data): #S: 83, E: 69
     unvisited = data.copy()
 
     while len(unvisited) > 0:
+        new_tentatative = []
         for Tx,Ty,Th,Td in tentatative:
             Vx, Vy, Vh, Vd = Tx, Ty, Th, Td
             Rx, Ry, Rh, Rd = visited[0]
@@ -56,7 +57,8 @@ def solve_p1(data): #S: 83, E: 69
                     Vd = Rd+1
             visited.append(Vx, Vy, Vh, Vd)
             data[Vx][Vx] = [Vh,Vd]
-
+            new_tentatative+=list(get_connected(data, Sx, Sy)[1] | where(lambda a:a[3] < float('inf')))
+            
 
 
     for row in data:
