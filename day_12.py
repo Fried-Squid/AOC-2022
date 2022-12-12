@@ -5,20 +5,20 @@ import numpy as np
 def get_connected(data,x,y):
     res = []
     if 0<x<len(data):
-        res.append((data[x+1][y],(x+1,y)))
-        res.append((data[x-1][y],(x-1,y)))
+        res.append((x+1,y, data[x+1][y][0], data[x+1][y][1]))
+        res.append((x-1,y, data[x-1][y][0], data[x-1][y][1]))
     elif 0<x:
-        res.append((data[x-1][y],(x-1,y)))
+        res.append((x+1,y, data[x+1][y][0], data[x+1][y][1]))
     elif x<len(data):
-        res.append((data[x+1][y],(x+1,y)))
-    if 0<y<len(data[x]):
-        res.append((data[x][y+1],(x,y+1)))
-        res.append((data[x][y-1],(x,y-1)))
-    elif 0<y:
-        res.append((data[x][y-1],(x,y-1)))
-    elif x<len(data[x]):
-        res.append((data[x][y+1],(x,y+1)))
-    return (x,y,data[x][y]), res
+        res.append((x-1,y, data[x-1][y][0], data[x-1][y][1]))
+    if 0<y<len(data[0]):
+        res.append((x,y+1, data[x][y+1][0], data[x][y+1][1]))
+        res.append((x,y-1, data[x][y-1][0], data[x][y-1][1]))
+    elif 0<x:
+        res.append((x,y+1, data[x][y+1][0], data[x][y+1][1]))
+    elif x<len(data):
+        res.append((x,y-1, data[x][y-1][0], data[x][y-1][1]))
+    return [x,y,data[x][y][0],data[x][y][1]], res
 
 def solve_p1(data): #S: 83, E: 69
     data = list(data | select(lambda a: [x for x in a]))
@@ -38,27 +38,27 @@ def solve_p1(data): #S: 83, E: 69
     
     data = list( data | select(lambda a: list(a | select(lambda b:(b,float('inf'))))))
     data = np.array(data)
-    data[data == ["S",float('inf')]] = None
 
-    visited = [([Sx, Sy],97, 0)]
-    tentatative = [[get_connected(data,Sx, Sy),0]]
-    print(tentatative)
-    unvisited = data
+    visited = []
+    visited[0], tentatative = get_connected(data, Sx, Sy)
+    unvisited = data.copy()
 
-    while len(unvisited[unvisited != None]) > 0:
-        add_to_tentatative = []
-        for ((Rx, Ry, Rh), connected_nodes), dist in tentatative: #[((0, 0, 'S'), [(97, (1, 0)), (97, (0, 1))]), 0]
-            if Rh == 'S': Rh=97
-            get_neighbours = partial(get_connected, unvisited)
-            for Nh, (Nx, Ny) in connected_nodes:
-                if Nh <= Rh+1:
-                    visited.append(([Nx, Ny], Nh, dist+1))
-                    add_to_tentatative += get_neighbours(Nx,Ny),dist #[[(Rx,Ry,Rh), [neighbours], dist?]]
-                else:
+    while len(unvisited) > 0:
+        for Tx,Ty,Th,Td in tentatative:
+            Vx, Vy, Vh, Vd = Tx, Ty, Th, Td
+            Rx, Ry, Rh, Rd = visited[0]
+            if Rh+1 < Th:
+                pass
+            else:
+                if Rd+1 >= Td:
                     pass
+                else:
+                    Vd = Rd+1
+            visited.append(Vx, Vy, Vh, Vd)
+            data[Vx][Vx] = [Vh,Vd]
 
 
-    print(tentatative)
+
     for row in data:
         print(row)
     
