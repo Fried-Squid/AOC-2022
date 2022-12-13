@@ -1,6 +1,7 @@
 from pipe import select, where, traverse
-from functools import partial
+import colorama
 import numpy as np
+import time
 
 def get_connected(data,x,y):
     res = []
@@ -39,6 +40,7 @@ class Node:
         self.is_end   = is_end
         self.visited = False
 
+        self.frontier = True
     def set_neighbours(self, neighbours):
         self.neighbours = neighbours
         self.distances  = [1 for _ in neighbours]
@@ -54,6 +56,7 @@ class Node:
     def visit(self):
         self.visited = True
 def solve_p1(data): #S: 83, E: 69
+    colorama.init()
     data = list(data | select(lambda a: [x for x in a]))
     temp = np.array(data)
     Sx, Sy = np.where(temp == "S")
@@ -78,10 +81,13 @@ def solve_p1(data): #S: 83, E: 69
     start_node = nodes[Sx][Sy]
 
     next_nodes = [start_node]
+    t=0
     while not nodes[Ex][Ey].cur < 999:
         next_next_nodes = []
         for node in next_nodes:
-
+            if t % 5 == 0:
+                cool_renderer_p1(nodes)
+            t+=1
             neighbours = node.get_neighbours()
             for neighbour in list(neighbours | where(lambda a: not a.visited)):
                 if neighbour.cur > node.cur + 1:
@@ -89,10 +95,26 @@ def solve_p1(data): #S: 83, E: 69
             node.visit()
             next_next_nodes += list(neighbours | where(lambda a: not a.visited))
         next_nodes = list(set(list(next_next_nodes | where(lambda a:not a.visited))))
-    for row in nodes:
-        print(list(row | select(lambda a: a.cur)))
+    #for row in nodes:
+    #    print(list(row | select(lambda a: a.cur)))
     return nodes[Ex][Ey].cur
 
-def solve_p1(data):
+import sys
+def cool_renderer_p1(nodes):
+    print(end="\033[<41>A")
+    S="\n"*41
+    for row in nodes:
+        s = ""
+        for node in row:
+            col1 = (colorama.Fore.LIGHTWHITE_EX, colorama.Fore.BLUE)[not node.visited]
+            col2 = (col1, colorama.Style.BRIGHT + colorama.Fore.RED)[node.frontier and node.visited]
+            if node.is_end == True or node.is_start: col2 = colorama.Style.BRIGHT + colorama.Fore.CYAN + colorama.Back.WHITE
+            s+=col2 + str(chr(node.height)) + colorama.Fore.RESET + colorama.Style.RESET_ALL + colorama.Back.RESET
+            if node.visited:
+                node.frontier = False
+        S+=s+"\n"
+    sys.stdout.write(S)
+    time.sleep(0.01)
+def solve_p2(data):
     honestly = 430 #just_eyeball_it, closest A is obvious
     return 430
