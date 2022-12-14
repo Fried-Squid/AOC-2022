@@ -1,22 +1,22 @@
 from itertools import groupby
+from pipe import where
 
 def process(string):
     return eval(string)
 
 def compare(pairL, pairR):
-    if type(pairL) == int and type(pairR) == int:
-        return pairL <= pairR
-    elif type(pairL) == list and type(pairR) == int:
-        return compare(pairL, [pairR])
-    elif type(pairR) == list and type(pairL) == int:
-        return compare([pairL], pairR)
-    else: #both are lists:
-        temp=[]
-        if len(pairL) > len(pairR):
-            return False
-        for i in range(min([len(pairL), len(pairR)])):
-            temp.append(compare(pairL[i], pairR[i]))
-        return all(temp)
+    match pairL, pairR:
+        case int(), int():
+            return (pairL > pairR) - (pairL < pairR) 
+        case int(), list():
+            return compare(pairL, [pairR])
+        case list(), int():
+            return compare([pairL], pairR)
+        case list(), list():
+            mapped = map(lambda a,b: (a > b) - (a < b), pairL, pairR)
+            for each in mapped:
+                if each in [-1,1]: return each
+            return (lambda a,b: (a > b) - (a < b))(pairL, pairR)
 
     
 def solve_p1(data):
@@ -28,11 +28,14 @@ def solve_p1(data):
 
     indexes_running_total=0
     for index,(pairL, pairR) in enumerate(pairs):
-        if compare(pairL, pairR):
-            indexes_running_total+=index
-    
+        print(pairL, pairR)
+        x = compare(pairL, pairR)
+        print(x)
+        if x:
+            indexes_running_total+=index+1
+
     return indexes_running_total
 
 
 def solve_p2(data):
-    pass
+    return "havent done p2"
