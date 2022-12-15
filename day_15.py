@@ -12,7 +12,6 @@ def solve_p1(data):
     data = list(data | select(lambda a: a.split(":")))
     data = list(data | select(lambda a: list(a | select(lambda b: b.split(",")))))
     data = list(data | select(lambda a: list(a | select(lambda b: list(b | select(int))))))
-    # data = [[[Sx,Sy],[Bx,By]]]
 
     sorted_x = list(data | select(lambda x:x[0]))
     sorted_x.sort(key=lambda x: x[0])
@@ -44,25 +43,40 @@ def solve_p1(data):
 
     return z
 
-    
+
+def generate_closed_set(center, radius):
+    pointset = [center[:]]
+    cx, cy = center
+
+    for t in range(1, radius+1):
+        #x add, y minus
+        for i in range(1, radius+1):
+            pointset.append([cx+i,cy-t])
+        for i in range(1, radius+1):
+            pointset.append([cx+i,cy+t])
+        for i in range(1, radius+1):
+            pointset.append([cx-i,cy-t])
+        for i in range(1, radius+1):
+            pointset.append([cx-i,cy+t])
+
+    return pointset
+
+
 
 def solve_p2(data):
+    print("start p2")
     data = list(data | select(lambda a: a.replace("Sensor at ", "").replace(" closest beacon is at ","").replace("y=","").replace("x=","")))
     data = list(data | select(lambda a: a.split(":")))
     data = list(data | select(lambda a: list(a | select(lambda b: b.split(",")))))
     data = list(data | select(lambda a: list(a | select(lambda b: list(b | select(int))))))
-    # data = [[[Sx,Sy],[Bx,By]]]
 
     data = list(data | select(lambda a:[a[0], manhattan_dist(a[0], a[1])]))
+    beacons, distances = list(zip(*data))
+    basis = map(generate_closed_set, beacons, distances)
+    basis = list(set(list(basis | traverse)))
+    
+    points = [[[x,y] for y in range(0, 4000000)] for y in range(0, 4000000)]
 
-    # i think i only need to check points that lie only m=1 diagonals of points
+    return list(filter(lambda x:x not in basis, points))
 
-    beacons = list(data | select(lambda a: a[0]))
-    lines = []
-    upper = 4000000
-    lower = 0
-    for beacon in beacons:
-        max_t = max(beacon[0], beacon[1])
-        lines.append()
 
-    return z
