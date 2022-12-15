@@ -8,7 +8,6 @@ def manhattan_dist(v1, v2):
     return abs(x1-x2) + abs(y1-y2) #utterly buckwild
 
 def solve_p1(data):
-    return "solved"
     data = list(data | select(lambda a: a.replace("Sensor at ", "").replace(" closest beacon is at ","").replace("y=","").replace("x=","")))
     data = list(data | select(lambda a: a.split(":")))
     data = list(data | select(lambda a: list(a | select(lambda b: b.split(",")))))
